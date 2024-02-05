@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "704116316629",
+    "project_id": "nixownn",
+    "storage_bucket": "nixownn.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:704116316629:android:969dcc566e87aa1c90c55c",
+        "android_client_info": {
+          "package_name": "com.example.nixon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAf6yenydJO6W675UFAW-twbrWHdgFzRo8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:704116316629:android:6b763901c808839090c55c",
+        "android_client_info": {
+          "package_name": "com.kayla.nixown"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAf6yenydJO6W675UFAW-twbrWHdgFzRo8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
