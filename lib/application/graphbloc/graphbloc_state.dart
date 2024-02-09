@@ -4,7 +4,7 @@ class GraphblocState {
   final bool isLoading;
   final bool isError;
   final List<DealersModel> dealersWithProductCount;
-  final List<ProductModel> dealersWithNames;
+
 
 
  
@@ -12,7 +12,7 @@ class GraphblocState {
 
 
   const GraphblocState({
-    required this.dealersWithNames,
+ 
    
     required this.dealersWithProductCount,
     required this.isLoading,
@@ -25,7 +25,7 @@ final class GraphblocInitial extends GraphblocState {
       : super(
             isLoading: false,
             isError: false,
-            dealersWithProductCount: [],dealersWithNames: []
+            dealersWithProductCount: [],
            
             );
 }

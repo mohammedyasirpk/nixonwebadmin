@@ -15,7 +15,7 @@ class DashBoardRepo {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
         .instance
         .collection("items")
-        .where("isSold", isEqualTo: true)
+           .where('purchaseDate',isNotEqualTo: null)
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
@@ -57,18 +57,20 @@ class DashBoardRepo {
     List<int> productCountList =
         List.filled(7, 0); // Initialize with zeros for each day
 
+        DateTime today = DateTime( DateTime.now().year, DateTime.now().month, DateTime.now().day);
+
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
         .instance
-        .collection("items")
+        .collection("items")    .where('productionDate',isNotEqualTo: null)
         .where('productionDate',
             isGreaterThanOrEqualTo: Timestamp.fromDate(
-                DateTime.now().subtract(const Duration(days: 7))))
+               today.subtract(const Duration(days: 6))))
         .get();
     if (querySnapshot.docs.isNotEmpty) {
       for (var doc in querySnapshot.docs) {
         Timestamp timestamp = doc['productionDate'];
-        DateTime saleDate = timestamp.toDate();
-        int dayOfWeek = saleDate.weekday - 1;
+        DateTime productionDate = timestamp.toDate();
+        int dayOfWeek = productionDate.weekday ;
 
         if (dayOfWeek >= 0 && dayOfWeek < 7) {
           productCountList[dayOfWeek]++;
@@ -119,6 +121,7 @@ class DashBoardRepo {
             topDealersList.add({
               'name': userDoc.data()["name"],
               'salesCount': salesCount,
+              'dealerId':userDoc.id,
               'dealersTotalCount': sortedDealers.length
             });
             break;
@@ -137,25 +140,41 @@ class DashBoardRepo {
   Future<List<int>> getDealersSoldCountPerWeek() async {
     List<int> productCountList =
         List.filled(7, 0); // Initialize with zeros for each day
+        DateTime today = DateTime( DateTime.now().year, DateTime.now().month, DateTime.now().day );
+         int  dayOfWeek = 0;
+
+  DateTime now = DateTime.now();
+  int currentDayOfWeek = now.weekday;
+  print(currentDayOfWeek);
+
 
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
         .instance
         .collection("items")
-        .where("isSold", isEqualTo: true)
+        .where('purchaseDate',isNotEqualTo: null)
         .where('purchaseDate',
             isGreaterThanOrEqualTo: Timestamp.fromDate(
-                DateTime.now().subtract(const Duration(days: 7))))
+                today .subtract(const Duration(days: 6))))
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
       for (var doc in querySnapshot.docs) {
         Timestamp timestamp = doc['purchaseDate'];
         DateTime saleDate = timestamp.toDate();
-        int dayOfWeek = saleDate.weekday - 1;
 
-        if (dayOfWeek >= 0 && dayOfWeek < 7) {
-          productCountList[dayOfWeek]++;
+        
+        print(saleDate.weekday);
+        if(saleDate.weekday == 7 ){
+          dayOfWeek = 0;
+        }else{
+         dayOfWeek = saleDate.weekday ;
         }
+              productCountList[dayOfWeek]++;
+      
+
+       
+    
+
       }
 
       return productCountList;
@@ -218,18 +237,22 @@ class DashBoardRepo {
     List<int> productCountList =
         List.filled(7, 0); // Initialize with zeros for each day
 
+        
+        DateTime today = DateTime( DateTime.now().year, DateTime.now().month, DateTime.now().day);
+
+
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
         .instance
         .collection("complaints")
-        .where('serviceDate',
+        .where('registerDate',
             isGreaterThanOrEqualTo: Timestamp.fromDate(
-                DateTime.now().subtract(const Duration(days: 7))))
+                today.subtract(const Duration(days: 7))))
         .get();
     if (querySnapshot.docs.isNotEmpty) {
       for (var doc in querySnapshot.docs) {
-        Timestamp timestamp = doc['serviceDate'];
+        Timestamp timestamp = doc['registerDate'];
         DateTime saleDate = timestamp.toDate();
-        int dayOfWeek = saleDate.weekday - 1;
+        int dayOfWeek = saleDate.weekday ;
 
         if (dayOfWeek >= 0 && dayOfWeek < 7) {
           productCountList[dayOfWeek]++;
@@ -244,20 +267,21 @@ class DashBoardRepo {
 
 
 
-  Future<List<int>> getDealersSoldCountPerWeekForIndividual({required String dealname}) async {
+  Future<List<int>> getDealersSoldCountPerWeekForIndividual({required String dealerid}) async {
     List<int> productCountList =
         List.filled(7, 0); // Initialize with zeros for each day
 
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
         .instance
         .collection("items")
-        .where("isSold", isEqualTo: true).where("isDealer",isEqualTo: dealname)
+       .where("dealer",isEqualTo: dealerid).where("isSold", isEqualTo: true)
         .where('purchaseDate',
             isGreaterThanOrEqualTo: Timestamp.fromDate(
                 DateTime.now().subtract(const Duration(days: 7))))
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
+     
       for (var doc in querySnapshot.docs) {
         Timestamp timestamp = doc['purchaseDate'];
         DateTime saleDate = timestamp.toDate();

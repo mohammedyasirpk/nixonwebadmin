@@ -17,7 +17,7 @@ class ProgressbarContainer extends StatelessWidget {
 
   double calculateHeightValue(int soldCount, int maxcount) {
     if (maxcount == 0) {
-      return 0.0; // Handle division by zero scenario
+      return 0.0; 
     }
     double totalHeight = 180;
     double divepoint = totalHeight / maxcount;

@@ -7,43 +7,35 @@ import 'package:nixon/constants/sizedbox.dart';
 import 'package:nixon/domain/models/productmodel.dart';
 import 'package:nixon/repostitory/dashboardrepo.dart';
 import '../../../constants/colors.dart';
-import '../../../domain/models/customermodel.dart';
 import '../../home/widgets/progress_container.dart';
 
-class SeperateFirstGraph extends StatefulWidget {
-  const SeperateFirstGraph({
+class SeperateService extends StatefulWidget {
+  const SeperateService({
     super.key,
   });
 
   @override
-  State<SeperateFirstGraph> createState() => _SeperateFirstGraphState();
+  State<SeperateService> createState() => _SeperateFirstGraphState();
 }
 
-class _SeperateFirstGraphState extends State<SeperateFirstGraph> {
+class _SeperateFirstGraphState extends State<SeperateService> {
   final ValueNotifier<String> selectedValuePopUp = ValueNotifier("Select");
 
   String _getDateByIndex(int index) {
     List<String> daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-    int currentDayOfWeek =
-        DateTime.now().weekday == 7 ? 0 : DateTime.now().weekday;
-
     if (index >= 0 && index < daysOfWeek.length) {
-      if (index == currentDayOfWeek) {
-        return '${daysOfWeek[index]}*';
-      } else {
-        return daysOfWeek[index];
-      }
+      return daysOfWeek[index];
     } else {
       return '';
     }
   }
 
   List<ProductModel> dealerNameList = [];
-  void getdealerNames() async {
+  getdealerNames() async {
     dealerNameList.clear();
     final listgetdealers =
-        await DashBoardRepo.instance.getTopDealersWithCount();
+        await DashBoardRepo.instance.getTopServicesWithCount();
     for (var item in listgetdealers) {
       final dealerModel = ProductModel(
           productName: item["name"],
@@ -90,8 +82,7 @@ class _SeperateFirstGraphState extends State<SeperateFirstGraph> {
                       borderRadius: BorderRadius.circular(10)),
                   child: Center(
                     child: Padding(
-                      padding:
-                          const EdgeInsets.only(right: 8, left: 8, bottom: 5),
+                      padding: const EdgeInsets.only(right: 8,left: 8,bottom: 5),
                       child: Row(
                         children: [
                           PopupMenuButton<String>(
@@ -150,21 +141,13 @@ class _SeperateFirstGraphState extends State<SeperateFirstGraph> {
                       padding: const EdgeInsets.only(left: 30, right: 20),
                       child: BlocBuilder<GraphblocBloc, GraphblocState>(
                         builder: (context, state) {
-                          List<DealersModel> dealerModelListTest = [];
-                          dealerModelListTest = state.dealersWithProductCount;
-                          bool isSunday = DateTime.now().weekday == 7;
-                          if(isSunday){
-                            dealerModelListTest.clear();
-                            dealerModelListTest.add(state.dealersWithProductCount[6]);
-                          }
-
+                      
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: List.generate(
                                 state.dealersWithProductCount.length, (index) {
-                              final dealerModelList =
-                                  state.dealersWithProductCount;
+                                  final dealerModelList = state.dealersWithProductCount;
                               final dealer = dealerModelList[index];
                               final date = _getDateByIndex(index);
                               return Column(

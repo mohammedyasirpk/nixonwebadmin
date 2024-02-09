@@ -10,7 +10,6 @@ import 'package:nixon/presentation/shimmer/widgets/shimmerSecondContainer.dart';
 import 'package:nixon/repostitory/dashboardrepo.dart';
 import 'package:shimmer/shimmer.dart';
 
-
 import '../../../application/graphbloc/graphbloc_bloc.dart';
 import '../widgets/date_dashboard.dart';
 import '../widgets/seperate_firstbox.dart';
@@ -20,7 +19,6 @@ class MyDashBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -116,7 +114,7 @@ class MyDashBoard extends StatelessWidget {
             ),
             const Text('Dealer',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        const SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Row(
@@ -172,7 +170,7 @@ class MyDashBoard extends StatelessWidget {
 
                         customerModelList.add(dealerModel);
                       }
-                      return  SecondContainer(
+                      return SecondContainer(
                         productModelList: customerModelList,
                         title: "Best Dealer",
                       );
@@ -185,30 +183,13 @@ class MyDashBoard extends StatelessWidget {
               height: 30,
             ),
             Row(
-              children: [
-                BlocBuilder<GraphblocBloc, GraphblocState>(
-                  builder: (context, state) {
-                    if (state.isLoading) {
-                      return Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: ShimmerSecondContainer());
-                    }
-
-                    return SeperateFirstGraph(
-                      dealerNameList: state.dealersWithNames,
-                      dealerModelList: state.dealersWithProductCount,
-                    );
-                  },
-                ),
-              ],
+              children: [SeperateFirstGraph()],
             ),
             const SizedBox(
               height: 30,
             ),
             const Text('Service',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            
             const SizedBox(
               height: 30,
             ),
@@ -265,7 +246,7 @@ class MyDashBoard extends StatelessWidget {
 
                         customerModelList.add(dealerModel);
                       }
-                      return  SecondContainer(
+                      return SecondContainer(
                         productModelList: customerModelList,
                         title: "Best Service",
                       );
@@ -274,8 +255,6 @@ class MyDashBoard extends StatelessWidget {
                 )
               ],
             )
-
-            
           ],
         ),
       ),

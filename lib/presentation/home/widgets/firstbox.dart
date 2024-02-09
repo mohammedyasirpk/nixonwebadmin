@@ -5,22 +5,53 @@ import 'package:nixon/domain/models/customermodel.dart';
 import '../../../constants/colors.dart';
 import 'progress_container.dart';
 
-class FirstBoxConatiner extends StatelessWidget {
+class FirstBoxConatiner extends StatefulWidget {
   const FirstBoxConatiner(
       {super.key, required this.dealerModelList, required this.title});
 
   final List<DealersModel> dealerModelList;
   final String title;
 
+  @override
+  State<FirstBoxConatiner> createState() => _FirstBoxConatinerState();
+}
+
+class _FirstBoxConatinerState extends State<FirstBoxConatiner> {
   String _getDateByIndex(int index) {
-    
     List<String> daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
+    int currentDayOfWeek =
+        DateTime.now().weekday == 7 ? 0 : DateTime.now().weekday;
+
     if (index >= 0 && index < daysOfWeek.length) {
-      return daysOfWeek[index];
+      if (index == currentDayOfWeek) {
+        return '${daysOfWeek[index]}*';
+      } else {
+        return daysOfWeek[index];
+      }
     } else {
       return '';
     }
+  }
+
+  List<DealersModel> dealerModelListTest = [];
+
+  void createNewSundayList() {
+    print("calling");
+    bool isSunday = DateTime.now().weekday == 7;
+
+    if (isSunday) {
+      dealerModelListTest.clear();
+      dealerModelListTest.add(widget.dealerModelList[6]);
+    
+    }
+  }
+
+  @override
+  void initState() {
+    dealerModelListTest = widget.dealerModelList;
+    createNewSundayList();
+    super.initState();
   }
 
   @override
@@ -39,7 +70,7 @@ class FirstBoxConatiner extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(title,
+                Text(widget.title,
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(
@@ -80,15 +111,14 @@ class FirstBoxConatiner extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
-                      padding: const EdgeInsets.only(left: 30,right: 20),
+                      padding: const EdgeInsets.only(left: 30, right: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children:
-                            List.generate(dealerModelList.length, (index) {
-                          final dealer = dealerModelList[index];
-                          final date = _getDateByIndex(
-                              index); 
+                            List.generate(dealerModelListTest.length, (index) {
+                          final dealer = dealerModelListTest[index];
+                          final date = _getDateByIndex(index);
                           return Column(
                             children: [
                               ProgressbarContainer(
