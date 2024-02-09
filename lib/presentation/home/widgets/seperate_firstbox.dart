@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nixon/application/graphbloc/graphbloc_bloc.dart';
+
 import 'package:nixon/constants/sizedbox.dart';
 import 'package:nixon/domain/models/customermodel.dart';
+import 'package:nixon/domain/models/productmodel.dart';
 import '../../../constants/colors.dart';
-import 'progress_container.dart';
+import '../../home/widgets/progress_container.dart';
 
-class FirstBoxConatiner extends StatelessWidget {
-  const FirstBoxConatiner(
-      {super.key, required this.dealerModelList, required this.title});
+class SeperateFirstGraph extends StatelessWidget {
+  SeperateFirstGraph({
+    super.key,
+    required this.dealerModelList, required this.dealerNameList,
+  });
 
   final List<DealersModel> dealerModelList;
-  final String title;
+  final List<ProductModel> dealerNameList;
+ 
+  final ValueNotifier<String> selectedValuePopUp = ValueNotifier("user");
 
   String _getDateByIndex(int index) {
-    
     List<String> daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
     if (index >= 0 && index < daysOfWeek.length) {
@@ -25,6 +31,7 @@ class FirstBoxConatiner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+             BlocProvider.of<GraphblocBloc>(context).add(GetDealersNameAndCountForGraphDealer(name: ""));
     return Container(
       width: MediaQuery.of(context).size.width * 0.37,
       height: MediaQuery.of(context).size.height * 0.4,
@@ -39,9 +46,9 @@ class FirstBoxConatiner extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
+                const Text("Title",
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(
                   width: 20,
                 ),
@@ -55,16 +62,43 @@ class FirstBoxConatiner extends StatelessWidget {
                       padding: const EdgeInsets.only(right: 8),
                       child: Row(
                         children: [
-                          const Icon(
-                            Icons.arrow_upward,
-                            color: graphTextWhiteColor,
-                            size: 15,
+                          PopupMenuButton<String>(
+                            child: Row(
+                              children: [
+                                ValueListenableBuilder(
+                                  valueListenable: selectedValuePopUp,
+                                  builder: (context, value, child) => Text(
+                                    selectedValuePopUp.value,
+                                    style: const TextStyle(
+                                        color: graphTextWhiteColor),
+                                  ),
+                                ),
+                                const Icon(
+                                  Icons.arrow_drop_down,
+                                  color: graphTextWhiteColor,
+                                )
+                              ],
+                            ),
+                            itemBuilder: (context) {
+                              return List.generate(dealerModelList.length,
+                                  (index) {
+                                return PopupMenuItem<String>(
+                                  value: dealerNameList[index].productName,
+                                  child: Text(
+                                    dealerNameList[index].productName),
+                                  onTap: () {
+                                    final selectedName = dealerNameList[index].productName ;
+                                    BlocProvider.of<GraphblocBloc>(context).add(GetDealersNameAndCountForGraphDealer(name: selectedName));
+                                  }
+                                  ,
+                                );
+                              });
+                            },
+                            onSelected: (value) {
+                              
+                              selectedValuePopUp.value = value;
+                            },
                           ),
-                          Text('0h  00',
-                              style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: graphTextWhiteColor))
                         ],
                       ),
                     ),
@@ -80,15 +114,14 @@ class FirstBoxConatiner extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
-                      padding: const EdgeInsets.only(left: 30,right: 20),
+                      padding: const EdgeInsets.only(left: 30, right: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children:
                             List.generate(dealerModelList.length, (index) {
                           final dealer = dealerModelList[index];
-                          final date = _getDateByIndex(
-                              index); 
+                          final date = _getDateByIndex(index);
                           return Column(
                             children: [
                               ProgressbarContainer(

@@ -19,6 +19,7 @@ class UserContainer extends StatelessWidget {
   String production = "production";
   String dealer = "dealer";
   String admin = "admin";
+  String serviceManager = "servicemanager";
 
   void updateRoleFunction(String role) {
     UserRepo.instance.updateRole(role: role, docid: userdata.employeeId!);
@@ -100,16 +101,25 @@ class UserContainer extends StatelessWidget {
                         updateRoleFunction(admin);
                       },
                     ),
+                     PopupMenuItem<String>(
+                      value: serviceManager,
+                      child: Text(serviceManager),
+                      onTap: () {
+                        updateRoleFunction(serviceManager);
+                      },
+                    ),
                   ];
                 },
                 onSelected: (value) {
                   selectedValuePopUp.value = value;
                 },
               ),
+            
             ),
             const SizedBox(
               width: 10,
-            )
+            ),
+           
           ],
         ),
       ),

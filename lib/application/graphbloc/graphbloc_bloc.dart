@@ -2,44 +2,56 @@
 import 'package:bloc/bloc.dart';
 import 'package:nixon/repostitory/dashboardrepo.dart';
 
+import '../../domain/models/customermodel.dart';
+import '../../domain/models/productmodel.dart';
+
 part 'graphbloc_event.dart';
 part 'graphbloc_state.dart';
 
 class GraphblocBloc extends Bloc<GraphblocEvent, GraphblocState> {
   GraphblocBloc() : super(GraphblocInitial()) {
-    on<GetDatesForGraph>((event, emit) async {
-      // print("event called");
+    on<GetDealersNameAndCountForGraphDealer>((event, emit) async {
+      //emit loading state
       emit(const GraphblocState(
-          isLoading: true,
-          isError: false,
-          countOfproductsPerDay: [],
-          dealersWithProductCount: []));
+        dealersWithNames: [],
+        dealersWithProductCount: [],
+        isLoading: true,
+        isError: false,
+      ));
 
-      final weeklyReportList =
-          await DashBoardRepo.instance.getProductCountForWeek();
-      // print(weeklyReportList);
 
-      if (weeklyReportList.isNotEmpty) {
-        emit(GraphblocState(
-            isLoading: false,
-            isError: false,
-            countOfproductsPerDay: weeklyReportList,
-            dealersWithProductCount: []));
-      } else {
-        print("list is empty");
+      //fuction for individual dealers count per week
+
+      final seprateListForDealers = await DashBoardRepo.instance
+          .getDealersSoldCountPerWeekForIndividual(dealname: event.name);
+
+      List<DealersModel> dealermodelList = [];
+      int maxvalue = seprateListForDealers
+          .reduce((value, element) => value > element ? value : element);
+      for (var produc in seprateListForDealers) {
+        final dealerModel =
+            DealersModel(productCount: produc, maxProducCount: maxvalue);
+        dealermodelList.add(dealerModel);
       }
-    });
 
-    on<GetDealersWithProductCount>((event, emit) async {
-      final topDealersProductConutList =
+      //function for find total dealers name
+
+      final dealerNameList =
           await DashBoardRepo.instance.getTopDealersWithCount();
-      print(topDealersProductConutList);
+      List<ProductModel> customerModelList = [];
+      for (var item in dealerNameList) {
+        final dealerModel = ProductModel(
+            productName: item["name"],
+            productCount: item["salesCount"],
+            maxSoldCount: item["dealersTotalCount"]);
 
+        customerModelList.add(dealerModel);
+      }
       emit(GraphblocState(
+          dealersWithNames: customerModelList,
+          dealersWithProductCount: dealermodelList,
           isLoading: false,
-          isError: false,
-          countOfproductsPerDay: [],
-          dealersWithProductCount: topDealersProductConutList));
+          isError: false));
     });
   }
 }

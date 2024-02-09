@@ -1,27 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nixon/constants/sizedbox.dart';
-import 'package:nixon/domain/models/customermodel.dart';
 import '../../../constants/colors.dart';
-import 'progress_container.dart';
+import '../../home/widgets/progress_container.dart';
 
-class FirstBoxConatiner extends StatelessWidget {
-  const FirstBoxConatiner(
-      {super.key, required this.dealerModelList, required this.title});
+class ShimmerFirstBoxContainer extends StatelessWidget {
+   ShimmerFirstBoxContainer(
+      {super.key,  });
 
-  final List<DealersModel> dealerModelList;
-  final String title;
+  final List dealerModelList = [1,2,3,4,5];
+  
 
-  String _getDateByIndex(int index) {
-    
-    List<String> daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-
-    if (index >= 0 && index < daysOfWeek.length) {
-      return daysOfWeek[index];
-    } else {
-      return '';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +28,8 @@ class FirstBoxConatiner extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(title,
-                    style: const TextStyle(
+                const Text("Title",
+                    style: TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(
                   width: 20,
@@ -80,21 +69,19 @@ class FirstBoxConatiner extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
-                      padding: const EdgeInsets.only(left: 30,right: 20),
+                      padding: const EdgeInsets.only(left: 30),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children:
                             List.generate(dealerModelList.length, (index) {
-                          final dealer = dealerModelList[index];
-                          final date = _getDateByIndex(
-                              index); 
-                          return Column(
+                          
+                          return const Column(
                             children: [
                               ProgressbarContainer(
-                                date: date,
-                                soldCount: dealer.productCount,
-                                maxcount: dealer.maxProducCount,
+                                date: "",
+                                soldCount: 5,
+                                maxcount: 5,
                               ),
                               sizedwidth,
                             ],

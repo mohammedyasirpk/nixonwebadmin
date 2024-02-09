@@ -1,27 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:nixon/constants/sizedbox.dart';
 import 'package:nixon/domain/models/customermodel.dart';
+
 import '../../../constants/colors.dart';
-import 'progress_container.dart';
+import '../../home/widgets/secondprojectcontainer.dart';
 
-class FirstBoxConatiner extends StatelessWidget {
-  const FirstBoxConatiner(
-      {super.key, required this.dealerModelList, required this.title});
+class ShimmerSecondContainer extends StatelessWidget {
+   ShimmerSecondContainer({super.key,   });
 
-  final List<DealersModel> dealerModelList;
-  final String title;
+  final List dealerModelList = [ 1,2,2,3,4,4,5];
 
-  String _getDateByIndex(int index) {
-    
-    List<String> daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-    if (index >= 0 && index < daysOfWeek.length) {
-      return daysOfWeek[index];
-    } else {
-      return '';
-    }
-  }
+  
+
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -31,22 +23,26 @@ class FirstBoxConatiner extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
         borderRadius: BorderRadius.circular(10),
+       
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
+            padding: const EdgeInsets.only(left: 10, right: 25, top: 25),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
+                 Text("Title",
+                    style:
+                        const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(
                   width: 20,
                 ),
+                // Small container
                 Container(
                   padding: const EdgeInsets.only(top: 8, left: 5),
+                  // Set the height as needed
                   decoration: BoxDecoration(
                       color: primeryColor,
                       borderRadius: BorderRadius.circular(10)),
@@ -75,33 +71,17 @@ class FirstBoxConatiner extends StatelessWidget {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(left: 10, right: 25, top: 25),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                      padding: const EdgeInsets.only(left: 30,right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children:
-                            List.generate(dealerModelList.length, (index) {
-                          final dealer = dealerModelList[index];
-                          final date = _getDateByIndex(
-                              index); 
-                          return Column(
-                            children: [
-                              ProgressbarContainer(
-                                date: date,
-                                soldCount: dealer.productCount,
-                                maxcount: dealer.maxProducCount,
-                              ),
-                              sizedwidth,
-                            ],
-                          );
-                        }),
-                      )),
-                ],
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(
+                  dealerModelList.length > 3 ? 3 : dealerModelList.length,
+                  (index) => SecondProgressContainer(
+                    itemName:"Product Name",
+                    soldCount: 5,
+                    maxvalue:5,
+                  ),
+                ),
               ),
             ),
           ),

@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nixon/domain/models/customermodel.dart';
 import 'package:nixon/domain/models/productmodel.dart';
-import 'package:nixon/presentation/home/widgets/analyticContainer1.dart';
+import 'package:nixon/presentation/home/widgets/firstbox.dart';
 import 'package:nixon/presentation/home/widgets/oraganization_dashboard.dart';
+import 'package:nixon/presentation/home/widgets/secondbox.dart';
+import 'package:nixon/presentation/shimmer/widgets/shimmerFirstBox.dart';
+import 'package:nixon/presentation/shimmer/widgets/shimmerSecondContainer.dart';
 import 'package:nixon/repostitory/dashboardrepo.dart';
+import 'package:shimmer/shimmer.dart';
 
-import '../widgets/allproject.dart';
+
+import '../../../application/graphbloc/graphbloc_bloc.dart';
 import '../widgets/date_dashboard.dart';
-import '../widgets/firstbox.dart';
-import '../widgets/lastbox.dart';
-import '../widgets/second_screen.dart';
+import '../widgets/seperate_firstbox.dart';
 
-class MyDashBoard extends StatefulWidget {
+class MyDashBoard extends StatelessWidget {
   const MyDashBoard({Key? key}) : super(key: key);
 
   @override
-  State<MyDashBoard> createState() => _MyDashBoardState();
-}
-
-class _MyDashBoardState extends State<MyDashBoard> {
-  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -44,34 +44,37 @@ class _MyDashBoardState extends State<MyDashBoard> {
                 DashBoardDate()
               ],
             ),
+            const Text('Production',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(
               height: 20,
             ),
             Row(
               children: [
                 FutureBuilder(
-                  future: DashBoardRepo.instance.getMostSoldProducts(),
+                  future: DashBoardRepo.instance.getProductCountForWeek(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
+                      return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: ShimmerFirstBoxContainer());
                     } else if (snapshot.hasError) {
                       return const Center(child: Text('No users found.'));
                     } else {
                       final product = snapshot.data ?? [];
-                      List<ProductModel> productModelList = [];
+                      List<DealersModel> dealermodelList = [];
+                      int maxvalue = product.reduce((value, element) =>
+                          value > element ? value : element);
                       for (var produc in product) {
-                      final model =   ProductModel(
-                            productName: produc["productType"],
-                            productCount: produc["count"]);
-                        productModelList.add(model)   ; 
+                        final dealerModel = DealersModel(
+                            productCount: produc, maxProducCount: maxvalue);
+                        dealermodelList.add(dealerModel);
                       }
-                      return FirstBox(
-                        dealers: const [],
-                          products: productModelList,
-                          mainTitle: " Top Products");
-                          
+                      return FirstBoxConatiner(
+                        dealerModelList: dealermodelList,
+                        title: "Last Week Products",
+                      );
                     }
                   },
                 ),
@@ -79,108 +82,200 @@ class _MyDashBoardState extends State<MyDashBoard> {
                   width: 30,
                 ),
                 FutureBuilder(
-                  future: DashBoardRepo.instance.getTopDealers(),
+                  future: DashBoardRepo.instance.getMostSoldProducts(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
+                      return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: ShimmerSecondContainer());
                     } else if (snapshot.hasError) {
                       return const Center(child: Text('No users found.'));
                     } else {
                       final product = snapshot.data ?? [];
-                      List<DealersModel> customerModelList = [];
+                      List<ProductModel> customerModelList = [];
                       for (var produc in product) {
-                      final model =   DealersModel(customername: produc);
-                        customerModelList.add(model)   ; 
+                        final model = ProductModel(
+                            productName: produc["productType"],
+                            productCount: produc["count"],
+                            maxSoldCount: produc["mostSoldCount"]);
+
+                        customerModelList.add(model);
                       }
-                      return  FirstBox(
-                           dealers: customerModelList,
-                          products: const [],
-                          mainTitle: " Top Dealers",
-                         );
+                      return SecondContainer(
+                        productModelList: customerModelList,
+                        title: "Best Products",
+                      );
                     }
                   },
-       
                 )
               ],
             ),
             const SizedBox(
               height: 30,
             ),
-            const Row(
+            const Text('Dealer',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        const SizedBox(
+              height: 30,
+            ),
+            Row(
               children: [
-                Row(
-                  children: [
-                    AnalyzeContaianer(),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    SecoendContainer(
-                        timeText: "0h:0m", persentage: "70", title: "Last week")
-                  ],
+                FutureBuilder(
+                  future: DashBoardRepo.instance.getDealersSoldCountPerWeek(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: ShimmerFirstBoxContainer());
+                    } else if (snapshot.hasError) {
+                      return const Center(child: Text('No users found.'));
+                    } else {
+                      final product = snapshot.data ?? [];
+                      List<DealersModel> dealermodelList = [];
+                      int maxvalue = product.reduce((value, element) =>
+                          value > element ? value : element);
+                      for (var produc in product) {
+                        final dealerModel = DealersModel(
+                            productCount: produc, maxProducCount: maxvalue);
+                        dealermodelList.add(dealerModel);
+                      }
+                      return FirstBoxConatiner(
+                        dealerModelList: dealermodelList,
+                        title: "Last Week Dealer",
+                      );
+                    }
+                  },
                 ),
-                SizedBox(
-                  width: 25,
+                const SizedBox(
+                  width: 30,
                 ),
-                SecoendContainer(
-                    timeText: "70 %", persentage: "70", title: "Last week"),
-                SizedBox(
-                  width: 10,
-                ),
-                AllProjectContainer(
-                  date: "January 4,2024",
+                FutureBuilder(
+                  future: DashBoardRepo.instance.getTopDealersWithCount(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: ShimmerSecondContainer());
+                    } else if (snapshot.hasError) {
+                      return const Center(child: Text('No users found.'));
+                    } else {
+                      final product = snapshot.data ?? [];
+                      List<ProductModel> customerModelList = [];
+                      for (var item in product) {
+                        final dealerModel = ProductModel(
+                            productName: item["name"],
+                            productCount: item["salesCount"],
+                            maxSoldCount: item["dealersTotalCount"]);
+
+                        customerModelList.add(dealerModel);
+                      }
+                      return  SecondContainer(
+                        productModelList: customerModelList,
+                        title: "Best Dealer",
+                      );
+                    }
+                  },
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            Row(
+              children: [
+                BlocBuilder<GraphblocBloc, GraphblocState>(
+                  builder: (context, state) {
+                    if (state.isLoading) {
+                      return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: ShimmerSecondContainer());
+                    }
+
+                    return SeperateFirstGraph(
+                      dealerNameList: state.dealersWithNames,
+                      dealerModelList: state.dealersWithProductCount,
+                    );
+                  },
                 ),
               ],
             ),
             const SizedBox(
-              height: 20,
+              height: 30,
             ),
-            const Column(
-              children: [
-                Row(
-                  children: [
-                    LastBox(
-                        mainTitle: "Activity Report",
-                        imageString: "lib/images/report.png"),
-                    SizedBox(
-                      width: 30,
-                    ),
-                    LastBox(
-                        mainTitle: "Top Assigned Project",
-                        imageString: "lib/images/project.png")
-                  ],
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Row(
-              children: [
-                Row(
-                  children: [
-                    AnalyzeContaianer(),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    SecoendContainer(
-                        timeText: "0h:0m", persentage: "70", title: "Last week")
-                  ],
-                ),
-                SizedBox(
-                  width: 25,
-                ),
-                SecoendContainer(
-                    timeText: "70 %", persentage: "70", title: "Last week"),
-                SizedBox(
-                  width: 10,
-                ),
-                AllProjectContainer(
-                  date: "January 4,2024",
-                ),
-              ],
+            const Text('Service',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            
+            const SizedBox(
+              height: 30,
             ),
+            Row(
+              children: [
+                FutureBuilder(
+                  future: DashBoardRepo.instance.getDealersSoldCountPerWeek(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: ShimmerFirstBoxContainer());
+                    } else if (snapshot.hasError) {
+                      return const Center(child: Text('No users found.'));
+                    } else {
+                      final product = snapshot.data ?? [];
+                      List<DealersModel> dealermodelList = [];
+                      int maxvalue = product.reduce((value, element) =>
+                          value > element ? value : element);
+                      for (var produc in product) {
+                        final dealerModel = DealersModel(
+                            productCount: produc, maxProducCount: maxvalue);
+                        dealermodelList.add(dealerModel);
+                      }
+                      return FirstBoxConatiner(
+                        dealerModelList: dealermodelList,
+                        title: "Last Week Service",
+                      );
+                    }
+                  },
+                ),
+                const SizedBox(
+                  width: 30,
+                ),
+                FutureBuilder(
+                  future: DashBoardRepo.instance.getTopDealersWithCount(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: ShimmerSecondContainer());
+                    } else if (snapshot.hasError) {
+                      return const Center(child: Text('No users found.'));
+                    } else {
+                      final product = snapshot.data ?? [];
+                      List<ProductModel> customerModelList = [];
+                      for (var item in product) {
+                        final dealerModel = ProductModel(
+                            productName: item["name"],
+                            productCount: item["salesCount"],
+                            maxSoldCount: item["dealersTotalCount"]);
+
+                        customerModelList.add(dealerModel);
+                      }
+                      return  SecondContainer(
+                        productModelList: customerModelList,
+                        title: "Best Service",
+                      );
+                    }
+                  },
+                )
               ],
             )
+
+            
           ],
         ),
       ),

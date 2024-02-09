@@ -6,8 +6,8 @@ class OrganisationTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.width *
-          0.03, // Set height as a percentage of screen width
+      height: MediaQuery.of(context).size.height *
+          0.05, 
       width: MediaQuery.of(context).size.width * 0.15,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
