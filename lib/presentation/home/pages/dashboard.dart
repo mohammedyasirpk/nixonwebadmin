@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nixon/domain/models/customermodel.dart';
 import 'package:nixon/domain/models/productmodel.dart';
 import 'package:nixon/presentation/home/widgets/firstbox.dart';
@@ -10,7 +9,6 @@ import 'package:nixon/presentation/shimmer/widgets/shimmerSecondContainer.dart';
 import 'package:nixon/repostitory/dashboardrepo.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../../application/graphbloc/graphbloc_bloc.dart';
 import '../widgets/date_dashboard.dart';
 import '../widgets/seperate_firstbox.dart';
 
@@ -112,6 +110,13 @@ class MyDashBoard extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
+              const Row(
+              children: [SeperateFirstGraph(isProduction: true,)],
+              
+            ),
+               const SizedBox(
+              height: 30,
+            ),
             const Text('Dealer',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             const SizedBox(
@@ -182,8 +187,8 @@ class MyDashBoard extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            Row(
-              children: [SeperateFirstGraph()],
+            const Row(
+              children: [SeperateFirstGraph(  isProduction: false,)],
             ),
             const SizedBox(
               height: 30,

@@ -17,6 +17,9 @@ class FirstBoxConatiner extends StatefulWidget {
 }
 
 class _FirstBoxConatinerState extends State<FirstBoxConatiner> {
+
+
+  
   String _getDateByIndex(int index) {
     List<String> daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
@@ -37,7 +40,7 @@ class _FirstBoxConatinerState extends State<FirstBoxConatiner> {
   List<DealersModel> dealerModelListTest = [];
 
   void createNewSundayList() {
-    print("calling");
+  
     bool isSunday = DateTime.now().weekday == 7;
 
     if (isSunday) {

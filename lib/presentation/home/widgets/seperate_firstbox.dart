@@ -13,7 +13,10 @@ import '../../home/widgets/progress_container.dart';
 class SeperateFirstGraph extends StatefulWidget {
   const SeperateFirstGraph({
     super.key,
+    required this.isProduction,
   });
+
+  final bool isProduction;
 
   @override
   State<SeperateFirstGraph> createState() => _SeperateFirstGraphState();
@@ -40,6 +43,8 @@ class _SeperateFirstGraphState extends State<SeperateFirstGraph> {
   }
 
   List<ProductModel> dealerNameList = [];
+  List<ProductModel> productNameList = [];
+
   void getdealerNames() async {
     dealerNameList.clear();
     final listgetdealers =
@@ -54,9 +59,22 @@ class _SeperateFirstGraphState extends State<SeperateFirstGraph> {
     }
   }
 
+  void getProductNames() async {
+    productNameList.clear();
+    final listgetdealers = await DashBoardRepo.instance.getMostSoldProducts();
+    for (var item in listgetdealers) {
+      final dealerModel = ProductModel(
+          productName: item["productType"],
+          productCount: item["count"],
+          maxSoldCount: item["mostSoldCount"],
+          uid: item["docId"]);
+      productNameList.add(dealerModel);
+    }
+  }
+
   @override
   void initState() {
-    getdealerNames();
+    widget.isProduction ? getProductNames() : getdealerNames();
     super.initState();
   }
 
@@ -148,14 +166,15 @@ class _SeperateFirstGraphState extends State<SeperateFirstGraph> {
                 children: [
                   Padding(
                       padding: const EdgeInsets.only(left: 30, right: 20),
-                      child: BlocBuilder<GraphblocBloc, GraphblocState>(
+                      child: widget.isProduction == false ?  BlocBuilder<GraphblocBloc, GraphblocState>(
                         builder: (context, state) {
                           List<DealersModel> dealerModelListTest = [];
                           dealerModelListTest = state.dealersWithProductCount;
                           bool isSunday = DateTime.now().weekday == 7;
-                          if(isSunday){
+                          if (isSunday) {
                             dealerModelListTest.clear();
-                            dealerModelListTest.add(state.dealersWithProductCount[6]);
+                            dealerModelListTest
+                                .add(state.dealersWithProductCount[6]);
                           }
 
                           return Row(
@@ -163,8 +182,7 @@ class _SeperateFirstGraphState extends State<SeperateFirstGraph> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: List.generate(
                                 state.dealersWithProductCount.length, (index) {
-                              final dealerModelList =
-                                  state.dealersWithProductCount;
+                              final dealerModelList = dealerModelListTest;
                               final dealer = dealerModelList[index];
                               final date = _getDateByIndex(index);
                               return Column(
