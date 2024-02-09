@@ -166,7 +166,7 @@ class _SeperateFirstGraphState extends State<SeperateFirstGraph> {
                 children: [
                   Padding(
                       padding: const EdgeInsets.only(left: 30, right: 20),
-                      child: widget.isProduction == false ?  BlocBuilder<GraphblocBloc, GraphblocState>(
+                      child:  BlocBuilder<GraphblocBloc, GraphblocState>(
                         builder: (context, state) {
                           List<DealersModel> dealerModelListTest = [];
                           dealerModelListTest = state.dealersWithProductCount;
