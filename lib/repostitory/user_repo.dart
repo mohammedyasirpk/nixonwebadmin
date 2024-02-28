@@ -120,22 +120,19 @@ class UserRepo {
     }
   }
 
-  Future<List<UserModel>> searchItems(String searchedItem) async {
-    List<UserModel> userList = [];
-    List<UserModel> filteredList = [];
+  // Future<List<UserModel>> searchItems(String searchedItem) async {
+  //   List<UserModel> userList = [];
+  //   List<UserModel> filteredList = [];
 
-    userList = await getAllUsers();
+  //   userList = await getAllUsers();
 
-    for (var item in userList) {
-      if (item.name == searchedItem) {
-        filteredList.add(item);
-      }
-    }
-    return filteredList;
+  //   for (var item in userList) {
+  //     if (item.name == searchedItem) {
+  //       filteredList.add(item);
+  //     }
+  //   }
+  //   return filteredList;
 
-    // filteredList = userList.where((item) =>
-    //     item.name!.toLowerCase().contains(searchedItem.toLowerCase())).toList();
-
-    // print("Filtered List: $filteredList");
-  }
+    
+  // }
 }

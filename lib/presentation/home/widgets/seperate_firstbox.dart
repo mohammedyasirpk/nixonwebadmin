@@ -133,12 +133,12 @@ class _SeperateFirstGraphState extends State<SeperateFirstGraph> {
                               return List.generate(dealerNameList.length,
                                   (index) {
                                 return PopupMenuItem<String>(
-                                  value: dealerNameList[index].productName,
+                                  value:widget.isProduction ? productNameList[index].productName :  dealerNameList[index].productName,
                                   child:
-                                      Text(dealerNameList[index].productName),
+                                      Text(widget.isProduction ? productNameList[index].productName :  dealerNameList[index].productName,),
                                   onTap: () {
                                     final selectedName =
-                                        dealerNameList[index].uid;
+                                      widget.isProduction ? productNameList[index].uid :  dealerNameList[index].uid;
                                     BlocProvider.of<GraphblocBloc>(context).add(
                                         GetDealersNameAndCountForGraphDealer(
                                             uid: selectedName ?? ""));
@@ -166,39 +166,79 @@ class _SeperateFirstGraphState extends State<SeperateFirstGraph> {
                 children: [
                   Padding(
                       padding: const EdgeInsets.only(left: 30, right: 20),
-                      child:  BlocBuilder<GraphblocBloc, GraphblocState>(
-                        builder: (context, state) {
-                          List<DealersModel> dealerModelListTest = [];
-                          dealerModelListTest = state.dealersWithProductCount;
-                          bool isSunday = DateTime.now().weekday == 7;
-                          if (isSunday) {
-                            dealerModelListTest.clear();
-                            dealerModelListTest
-                                .add(state.dealersWithProductCount[6]);
-                          }
+                      child: widget.isProduction == false
+                          ? BlocBuilder<GraphblocBloc, GraphblocState>(
+                              builder: (context, state) {
+                                List<DealersModel> dealerModelListTest = [];
+                                dealerModelListTest =
+                                    state.dealersWithProductCount;
+                                bool isSunday = DateTime.now().weekday == 7;
+                                if (isSunday) {
+                                  dealerModelListTest.clear();
+                                  dealerModelListTest
+                                      .add(state.dealersWithProductCount[6]);
+                                }
 
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: List.generate(
-                                state.dealersWithProductCount.length, (index) {
-                              final dealerModelList = dealerModelListTest;
-                              final dealer = dealerModelList[index];
-                              final date = _getDateByIndex(index);
-                              return Column(
-                                children: [
-                                  ProgressbarContainer(
-                                    date: date,
-                                    soldCount: dealer.productCount,
-                                    maxcount: dealer.maxProducCount,
-                                  ),
-                                  sizedwidth,
-                                ],
-                              );
-                            }),
-                          );
-                        },
-                      )),
+                                return Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: List.generate(
+                                      state.dealersWithProductCount.length,
+                                      (index) {
+                                    final dealerModelList = dealerModelListTest;
+                                    final dealer = dealerModelList[index];
+                                    final date = _getDateByIndex(index);
+                                    return Column(
+                                      children: [
+                                        ProgressbarContainer(
+                                          date: date,
+                                          soldCount: dealer.productCount,
+                                          maxcount: dealer.maxProducCount,
+                                        ),
+                                        sizedwidth,
+                                      ],
+                                    );
+                                  }),
+                                );
+                              },
+                            )
+                          : BlocBuilder<GraphblocBloc, GraphblocState>(
+                              builder: (context, state) {
+                                List<DealersModel> dealerModelListTest = [];
+                                dealerModelListTest =
+                                    state.dealersWithProductCount;
+                                bool isSunday = DateTime.now().weekday == 7;
+                                if (isSunday) {
+                                  dealerModelListTest.clear();
+                                  dealerModelListTest
+                                      .add(state.dealersWithProductCount[6]);
+                                }
+
+                                return Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: List.generate(
+                                      state.dealersWithProductCount.length,
+                                      (index) {
+                                    final dealerModelList = dealerModelListTest;
+                                    final dealer = dealerModelList[index];
+                                    final date = _getDateByIndex(index);
+                                    return Column(
+                                      children: [
+                                        ProgressbarContainer(
+                                          date: date,
+                                          soldCount: dealer.productCount,
+                                          maxcount: dealer.maxProducCount,
+                                        ),
+                                        sizedwidth,
+                                      ],
+                                    );
+                                  }),
+                                );
+                              },
+                            )),
                 ],
               ),
             ),

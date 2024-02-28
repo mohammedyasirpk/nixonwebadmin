@@ -30,7 +30,7 @@ class AllAdmin extends StatelessWidget {
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  final filterdList = snapshot.data!;
+                 
                 
 
                   UserModel user = snapshot.data![index];
